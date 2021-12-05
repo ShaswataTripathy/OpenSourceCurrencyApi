@@ -49,7 +49,7 @@ namespace OpenSourceCurrencyApi
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsApi",
-                    builder => builder.WithOrigins("https://open-source-currency-web.herokuapp.com")
+                    builder => builder.WithOrigins("http://localhost:4200","https://open-source-currency-web.herokuapp.com")
                         .AllowAnyHeader()
                         .AllowAnyMethod());
             });
