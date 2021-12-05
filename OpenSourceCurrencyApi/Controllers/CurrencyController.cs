@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace OpenSourceCurrencyApi.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("currency")]
     public class CurrencyController : Controller
     {
         private readonly ICurrencyRepository _currencyRepository;
@@ -16,7 +16,7 @@ namespace OpenSourceCurrencyApi.Controllers
             _currencyRepository = currencyRepository;
         }
 
-        [HttpGet("GetCurrencyComparison/{currency}")]
+        [HttpGet("comparison/{currency}")]
         public async Task<IActionResult> GetCurrencyComparisonResult(string currency)
         {
             var result = await _currencyRepository.GetCurrencyComparisonResult(currency);
@@ -24,7 +24,7 @@ namespace OpenSourceCurrencyApi.Controllers
             return Ok(result);
         }
 
-        [HttpGet("GetAllCurrencies")]
+        [HttpGet("all-currencies")]
         public async Task<IActionResult> GetAllCurrencies()
         {
             var result = await _currencyRepository.GetAllCurrencies();
