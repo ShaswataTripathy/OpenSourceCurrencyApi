@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using Microsoft.AspNetCore.Http;
 
 namespace OpenSourceCurrencyApi.Controllers
 {
@@ -23,43 +24,58 @@ namespace OpenSourceCurrencyApi.Controllers
         }
 
         [HttpGet("comparison/{currency}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CurrencyComparator))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetCurrencyComparisonResult(string currency)
         {
+            if (string.IsNullOrEmpty(currency))
+            {
+                return BadRequest();
+            }
+
             var result = await _currencyRepository.GetCurrencyComparisonResult(currency);
+            if(result == null)
+            {
+                return NotFound();
+            }
 
             return Ok(result);
         }
 
         [HttpGet("currencies")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Currency>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetAllCurrencies()
         {
             var result = await _currencyRepository.GetAllCurrencies();
+
+            if(result == null)
+            {
+                return NotFound();
+            }
 
             return Ok(result);
         }
 
         [HttpGet("comparison/download/{currency}")]
-        public async Task<FileResult> DownloadComparisonResult(string currency)
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DownloadComparisonResult(string currency)
         {
-            CurrencyComparator result = await _currencyRepository.GetCurrencyComparisonResult(currency);
-            
-            string fileName = $"{result.Date}_{currency}";
-            
-
-            
-            IEnumerable<CurrencyPrice> currencyPriceList = result.CurrencyBasePriceList;
-
-            var properties = typeof(CurrencyPrice).GetProperties().Select(x=> x.Name).ToList();
-            var headers = string.Join(",", properties);
-
-            var sb = new StringBuilder();
-            sb.AppendLine(headers);
-            foreach (var data in currencyPriceList)
+            if (string.IsNullOrEmpty(currency))
             {
-                sb.AppendLine(data.CurrencyShortName + "," + data.ExchangePrice);
+                return BadRequest();
+            }
+            string fileName = $"{currency}.csv";
+            var fileResult = await _currencyRepository.GetCurrencyComparisonFileResult(currency);
+
+            if (string.IsNullOrEmpty(fileResult))
+            {
+                return NotFound();
             }
 
-            return File(new UTF8Encoding().GetBytes(sb.ToString()), "text/csv", fileName);
+            return File(new UTF8Encoding().GetBytes(fileResult), "text/csv", fileName);
         }
     }
 }

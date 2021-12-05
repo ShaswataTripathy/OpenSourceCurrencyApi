@@ -30,6 +30,7 @@ namespace OpenSourceCurrencyApi
         {
             services.AddControllers();
 
+            var gitHubUrl = Configuration["GitHubProfile"];
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -41,15 +42,17 @@ namespace OpenSourceCurrencyApi
                     {
                         Name = "Shaswata Tripthy",
                         Email = string.Empty,
-                        Url = new Uri("https://github.com/ShaswataTripathy"),
+                        Url = new Uri(gitHubUrl),
                     },
                 });
             });
 
+            var allowedOrigin = Configuration["AllowedOrigin"];
+
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsApi",
-                    builder => builder.WithOrigins("https://open-source-currency-web.herokuapp.com")
+                    builder => builder.WithOrigins(allowedOrigin)
                         .AllowAnyHeader()
                         .AllowAnyMethod());
             });

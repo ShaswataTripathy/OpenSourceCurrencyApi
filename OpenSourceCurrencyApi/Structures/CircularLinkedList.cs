@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace OpenSourceCurrencyApi.Structures
 {
-    public sealed class CircularLinkedList<T> : ICollection<T>, IEnumerable<T>
+    public sealed class CircularLinkedList<T> : ICollection<T>
     {
 
         Node<T> head = null;
@@ -216,6 +216,11 @@ namespace OpenSourceCurrencyApi.Structures
             return GetEnumerator();
         }
 
+        /// <summary>
+        /// Bubble sorts the list 
+        /// </summary>
+        /// <param name="comparer"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         public void BubbleSort(IComparer<T> comparer = null)
         {
             comparer ??= Comparer<T>.Default;
