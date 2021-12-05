@@ -7,5 +7,6 @@ namespace OpenSourceCurrencyApi.Client
     {
         
         Task<string> GetCurrencyComparison(string baseCurrency);
+        Task<string> GetAllCurrencies();
     }
 }

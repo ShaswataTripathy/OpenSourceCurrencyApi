@@ -17,6 +17,65 @@ namespace OpenSourceCurrencyApi.Structures
 
         public int Count { get { return count; } }
         public bool IsReadOnly { get { return false; } }
+        
+        public CircularLinkedList()
+        : this(null, EqualityComparer<T>.Default)
+        {
+        }
+
+        public CircularLinkedList(IEnumerable<T> collection)
+        : this(collection, EqualityComparer<T>.Default)
+        {
+        }
+
+        public CircularLinkedList(IEqualityComparer<T> comparer)
+    : this(null, comparer)
+        {
+        }
+
+        public CircularLinkedList(IEnumerable<T> collection, IEqualityComparer<T> comparer)
+        {
+            if (comparer == null)
+                throw new ArgumentNullException("comparer");
+            this.comparer = comparer;
+            if (collection != null)
+            {
+                foreach (T item in collection)
+                    this.AddLast(item);
+            }
+        }
+
+        /// <summary>
+        /// Gets Tail node. Returns NULL if no tail node found
+        /// </summary>
+        public Node<T> Tail { get { return tail; } }
+
+        /// <summary>
+        /// Gets the head node. Returns NULL if no node found
+        /// </summary>
+        public Node<T> Head { get { return head; } }
+
+        /// <summary>
+        /// Gets the item at the current index
+        /// </summary>
+        /// <param name="index">Zero-based index</param>
+        /// <exception cref="ArgumentOutOfRangeException">index is out of range</exception>
+        public Node<T> this[int index]
+        {
+            get
+            {
+                if (index >= count || index < 0)
+                    throw new ArgumentOutOfRangeException("index");
+                else
+                {
+                    Node<T> node = this.head;
+                    for (int i = 0; i < index; i++)
+                        node = node.Next;
+                    return node;
+                }
+            }
+        }
+
 
         public void Add(T item)
         {
@@ -150,9 +209,39 @@ namespace OpenSourceCurrencyApi.Structures
             --count;
             return true;
         }
+
+
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public void BubbleSort(IComparer<T> comparer = null)
+        {
+            comparer ??= Comparer<T>.Default;
+
+            if (comparer is null)
+                throw new ArgumentNullException(nameof(comparer));
+
+            if (head is null)
+                return; 
+
+            bool agenda = true;
+
+            while (agenda)
+            {
+                agenda = false;
+
+                for (Node<T> node = head; !ReferenceEquals(node.Next, head); node = node.Next)
+                    if (comparer.Compare(node.Value, node.Next.Value) > 0)
+                    {
+                        agenda = true;
+
+                        var help = node.Value;
+                        node.Value = node.Next.Value;
+                        node.Next.Value = help;
+                    }
+            }
         }
     }
 }

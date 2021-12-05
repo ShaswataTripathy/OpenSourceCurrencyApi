@@ -25,24 +25,24 @@ namespace OpenSourceCurrencyApi.Client
             _configuration = configuration;
         }
 
+        public async Task<string> GetAllCurrencies()
+        {
+            string baseUrl = _configuration["BaseUrl"];
+            var httpResponse = await _client.GetAsync($"{baseUrl}{defaultTime}currencies.min.json");
+            return await httpResponse.Content.ReadAsStringAsync();
+
+        }
+
         public async Task<string> GetCurrencyComparison(string currency)
         {
             string baseUrl = _configuration["BaseUrl"];
             var httpResponse = await _client.GetAsync($"{baseUrl}{defaultTime}{defaultEndPoint}{currency}.min.json");
 
-            var content = await httpResponse.Content.ReadAsStringAsync();
-
-
-            //JObject result = JObject.Parse(content);
-
-            //string date = (string)result["date"];
-
-            //var pricesDict = JsonConvert.DeserializeObject<Dictionary<string, float>>(result[$"{currency}"].ToString());
-
-            //var pricesList = pricesDict.Select(x => new CurrencyPrice { CurrencyShortName = x.Key, ExchangePrice = x.Value }).ToList();
-
-            //new CurrencyComparator { CurrencyBasePriceList = pricesList, Date = date };
-            return content;
+            return await httpResponse.Content.ReadAsStringAsync();
+ 
         }
+
+
+
     }
 }

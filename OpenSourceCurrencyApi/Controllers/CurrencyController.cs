@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OpenSourceCurrencyApi.Client;
+using OpenSourceCurrencyApi.Repository;
 using System.Threading.Tasks;
 
 namespace OpenSourceCurrencyApi.Controllers
@@ -8,19 +9,27 @@ namespace OpenSourceCurrencyApi.Controllers
     [Route("[controller]")]
     public class CurrencyController : Controller
     {
-        private readonly IGitHubClient _gitHubClient;
+        private readonly ICurrencyRepository _currencyRepository;
 
-        public CurrencyController(IGitHubClient gitHubClient)
+        public CurrencyController(ICurrencyRepository currencyRepository)
         {
-            _gitHubClient = gitHubClient;
+            _currencyRepository = currencyRepository;
         }
 
         [HttpGet("GetCurrencyComparison/{currency}")]
         public async Task<IActionResult> GetCurrencyComparisonResult(string currency)
         {
-            var company = await _gitHubClient.GetCurrencyComparison(currency);
+            var result = await _currencyRepository.GetCurrencyComparisonResult(currency);
 
-            return Ok(company);
+            return Ok(result);
+        }
+
+        [HttpGet("GetAllCurrencies")]
+        public async Task<IActionResult> GetAllCurrencies()
+        {
+            var result = await _currencyRepository.GetAllCurrencies();
+
+            return Ok(result);
         }
     }
 }

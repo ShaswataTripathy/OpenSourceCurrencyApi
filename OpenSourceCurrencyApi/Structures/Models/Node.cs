@@ -6,17 +6,17 @@
         /// <summary>
         /// Gets the Value
         /// </summary>
-        public T Value { get; private set; }
+        public T Value { get; set; }
 
         /// <summary>
         /// Gets next node
         /// </summary>
-        public Node<T> Next { get; internal set; }
+        public Node<T> Next { get; set; }
 
         /// <summary>
         /// Gets previous node
         /// </summary>
-        public Node<T> Previous { get; internal set; }
+        public Node<T> Previous { get; set; }
 
         /// <summary>
         /// Initializes a new <see cref="Node"/> instance
