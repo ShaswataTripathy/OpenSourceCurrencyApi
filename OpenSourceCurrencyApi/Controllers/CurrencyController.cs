@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using OpenSourceCurrencyApi.Client;
 using OpenSourceCurrencyApi.Repository;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ namespace OpenSourceCurrencyApi.Controllers
 {
     [ApiController]
     [Route("currency")]
+    [EnableCors("CorsApi")]
     public class CurrencyController : Controller
     {
         private readonly ICurrencyRepository _currencyRepository;
@@ -24,7 +26,7 @@ namespace OpenSourceCurrencyApi.Controllers
             return Ok(result);
         }
 
-        [HttpGet("all-currencies")]
+        [HttpGet("currencies")]
         public async Task<IActionResult> GetAllCurrencies()
         {
             var result = await _currencyRepository.GetAllCurrencies();

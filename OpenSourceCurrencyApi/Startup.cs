@@ -46,6 +46,14 @@ namespace OpenSourceCurrencyApi
                 });
             });
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsApi",
+                    builder => builder.WithOrigins("https://open-source-currency-web.herokuapp.com")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod());
+            });
+
             services.AddHttpClient<IGitHubClient, GitHubClient>();
             services.AddScoped<ICurrencyRepository, CurrencyRepository>();
         }
@@ -58,13 +66,17 @@ namespace OpenSourceCurrencyApi
                 app.UseDeveloperExceptionPage();
             }
             app.UseSwagger();
-            app.UseSwaggerUI(c => {
+            app.UseSwaggerUI(c =>
+            {
 
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Demo Currency API V1");
             });
             app.UseHttpsRedirection();
 
+
+
             app.UseRouting();
+            app.UseCors("CorsApi");
 
             app.UseAuthorization();
 
