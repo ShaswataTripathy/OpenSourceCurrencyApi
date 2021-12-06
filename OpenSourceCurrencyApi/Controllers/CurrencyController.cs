@@ -27,20 +27,30 @@ namespace OpenSourceCurrencyApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CurrencyComparator))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> GetCurrencyComparisonResult(string currency)
         {
             if (string.IsNullOrEmpty(currency))
             {
                 return BadRequest();
             }
+            var currencyInput = currency.Trim().ToLower();
+            var currenciesList = await _currencyRepository.GetAllCurrencies();
 
-            var result = await _currencyRepository.GetCurrencyComparisonResult(currency);
-            if(result == null)
+            if (currenciesList.FindIndex(x => x.CurrencyShortName == currencyInput) != -1)
+            {
+                var result = await _currencyRepository.GetCurrencyComparisonResult(currencyInput);
+                if (result == null)
+                {
+                    return NoContent();
+                }
+
+                return Ok(result);
+            }
+            else
             {
                 return NotFound();
             }
-
-            return Ok(result);
         }
 
         [HttpGet("currencies")]
@@ -61,21 +71,33 @@ namespace OpenSourceCurrencyApi.Controllers
         [HttpGet("comparison/download/{currency}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DownloadComparisonResult(string currency)
         {
             if (string.IsNullOrEmpty(currency))
             {
                 return BadRequest();
             }
-            string fileName = $"{currency}.csv";
-            var fileResult = await _currencyRepository.GetCurrencyComparisonFileResult(currency);
+            var currencyInput = currency.Trim().ToLower();
+            var currenciesList = await _currencyRepository.GetAllCurrencies();
 
-            if (string.IsNullOrEmpty(fileResult))
+            if (currenciesList.FindIndex(x => x.CurrencyShortName == currencyInput) != -1)
+            {
+                string fileName = $"{currencyInput}.csv";
+                var fileResult = await _currencyRepository.GetCurrencyComparisonFileResult(currencyInput);
+
+                if (string.IsNullOrEmpty(fileResult))
+                {
+                    return NoContent();
+                }
+
+                return File(new UTF8Encoding().GetBytes(fileResult), "text/csv", fileName);
+            }
+            else
             {
                 return NotFound();
             }
 
-            return File(new UTF8Encoding().GetBytes(fileResult), "text/csv", fileName);
         }
     }
 }

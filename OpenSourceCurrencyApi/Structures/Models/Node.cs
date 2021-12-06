@@ -1,6 +1,5 @@
 ﻿namespace OpenSourceCurrencyApi.Structures.Models
 {
-
     public sealed class Node<T>
     {
         /// <summary>
