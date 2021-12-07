@@ -47,12 +47,12 @@ namespace OpenSourceCurrencyApi
                 });
             });
 
-            var allowedOrigin = Configuration["AllowedOrigin"];
+            
 
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsApi",
-                    builder => builder.WithOrigins(allowedOrigin)
+                    builder => builder.AllowAnyOrigin()
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .Build());
