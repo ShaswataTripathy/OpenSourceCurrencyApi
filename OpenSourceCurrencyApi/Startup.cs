@@ -54,7 +54,8 @@ namespace OpenSourceCurrencyApi
                 options.AddPolicy("CorsApi",
                     builder => builder.WithOrigins(allowedOrigin)
                         .AllowAnyHeader()
-                        .AllowAnyMethod());
+                        .AllowAnyMethod()
+                        .Build());
             });
 
             services.AddHttpClient<IGitHubClient, GitHubClient>();
